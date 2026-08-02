@@ -1,17 +1,11 @@
 package com.example.gemmaapp
 
 class LlamaBridge {
+    external fun stringFromJNI(): String
+
     companion object {
         init {
-            try {
-                System.loadLibrary("gemma")
-            } catch (e: UnsatisfiedLinkError) {
-                e.printStackTrace()
-            }
+            System.loadLibrary("llama_bridge")
         }
     }
-
-    external fun initModel(modelPath: String): Long
-    external fun generateResponse(contextPtr: Long, prompt: String): String
-    external fun freeModel(contextPtr: Long)
 }
