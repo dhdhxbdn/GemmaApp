@@ -1,6 +1,6 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
 }
 
 android {
@@ -15,7 +15,7 @@ android {
         versionName = "1.0"
 
         ndk {
-            abiFilters.addAll(listOf("arm64-v8a"))
+            abiFilters.add("arm64-v8a")
         }
 
         externalNativeBuild {
@@ -51,5 +51,5 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
+    implementation("androidx.core:core-ktx:1.12.0")
 }
