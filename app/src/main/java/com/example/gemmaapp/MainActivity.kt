@@ -9,7 +9,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // Загружаем строку из C++ движка
         val bridge = LlamaBridge()
         val cppMessage = try {
             bridge.stringFromJNI()
@@ -17,13 +16,13 @@ class MainActivity : AppCompatActivity() {
             "Ошибка JNI: ${e.message}"
         }
 
-        // Рисуем экран кодом
         val tv = TextView(this).apply {
             text = cppMessage
-            textSize = 24f
+            textSize = 14f // Уменьшили шрифт
             gravity = Gravity.CENTER
-            setTextColor(0xFF00FF00.toInt()) // Ярко-зеленый текст
-            setBackgroundColor(0xFF000000.toInt()) // Черный фон
+            setPadding(32, 32, 32, 32) // Добавили отступы
+            setTextColor(0xFF00FF00.toInt())
+            setBackgroundColor(0xFF000000.toInt())
         }
         
         setContentView(tv)
