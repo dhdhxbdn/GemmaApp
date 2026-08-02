@@ -4,24 +4,18 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <TextView android:id="@+id/tvHeader"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="GEMMA ENGINE" android:textColor="@color/neon_green"
-        android:textSize="18sp" android:textStyle="bold"
-        android:gravity="center" android:padding="12dp"
-        android:background="@color/dark_gray" />
+    <!-- RecyclerView для сообщений -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewMessages"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/inputLayout"
+        android:padding="8dp" />
 
-    <ScrollView android:id="@+id/chatScroll"
-        android:layout_width="match_parent" android:layout_height="match_parent"
-        android:layout_below="@id/tvHeader" android:layout_above="@id/inputLayout"
-        android:padding="8dp">
-        <LinearLayout android:id="@+id/chatContainer"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
-
+    <!-- Макет ввода -->
     <LinearLayout android:id="@+id/inputLayout"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal" android:padding="8dp"
         android:background="@color/dark_gray" android:gravity="center_vertical">
