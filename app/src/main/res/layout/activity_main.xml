@@ -1,35 +1,41 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
-    android:padding="16dp">
+    android:background="@color/black">
 
-    <!-- Круглая кнопка слева сверху -->
-    <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/btnTopLeft"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
-        app:srcCompat="@drawable/ic_circle_dot"
-        android:contentDescription="Menu" />
+    <TextView android:id="@+id/tvHeader"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="GEMMA ENGINE" android:textColor="@color/neon_green"
+        android:textSize="18sp" android:textStyle="bold"
+        android:gravity="center" android:padding="12dp"
+        android:background="@color/dark_gray" />
 
-    <!-- Строка ввода снизу -->
-    <EditText
-        android:id="@+id/inputMessage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <ScrollView android:id="@+id/chatScroll"
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:layout_below="@id/tvHeader" android:layout_above="@id/inputLayout"
+        android:padding="8dp">
+        <LinearLayout android:id="@+id/chatContainer"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
+    <LinearLayout android:id="@+id/inputLayout"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#121212"
-        android:hint="Сообщение..."
-        android:textColorHint="#666666"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:padding="14dp"
-        android:inputType="textMultiLine"
-        android:maxLines="4" />
-
+        android:orientation="horizontal" android:padding="8dp"
+        android:background="@color/dark_gray" android:gravity="center_vertical">
+        
+        <EditText android:id="@+id/etMessage"
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:background="@null"
+            android:hint="Введи сообщение..." android:textColorHint="@color/gray_text"
+            android:textColor="#FFFFFF" android:minHeight="48dp"
+            android:paddingStart="12dp" android:paddingEnd="12dp"/>
+            
+        <ImageButton android:id="@+id/btnSend"
+            android:layout_width="48dp" android:layout_height="48dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_send" />
+    </LinearLayout>
 </RelativeLayout>
