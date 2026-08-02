@@ -11,8 +11,8 @@ android {
         applicationId = "com.example.gemmaapp"
         minSdk = 26
         targetSdk = 34
-        versionCode 1
-        versionName "1.0"
+        versionCode = 1
+        versionName = "1.0"
 
         externalNativeBuild {
             cmake {
