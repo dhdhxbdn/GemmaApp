@@ -18,18 +18,13 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: gradle
 
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
 
-    - name: Build APK with Gradle
+    - name: Build APK
       run: |
-        chmod +x gradlew || true
-        gradle build --no-daemon || true
-        # Создаем обертку gradle для сборки
-        gradle wrapper
-        ./gradlew assembleDebug --stacktrace
+        gradle assembleDebug --stacktrace
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
