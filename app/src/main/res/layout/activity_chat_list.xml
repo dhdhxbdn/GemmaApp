@@ -1,43 +1,23 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:orientation="vertical"
+    android:background="#0A0A0A"
+    android:padding="16dp">
 
-    <!-- Шапка в стиле DeepSeek -->
-    <RelativeLayout
-        android:id="@+id/headerLayout"
+    <Button
+        android:id="@+id/btnNewChat"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="@color/dark_gray"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="GEMMA"
-            android:textColor="@color/neon_green"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:letterSpacing="0.1" />
-
-        <ImageButton
-            android:id="@+id/btnNewChat"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_send"
-            android:rotation="90"
-            android:tint="@color/neon_green" />
-    </RelativeLayout>
+        android:layout_height="wrap_content"
+        android:text="+ New Chat"
+        android:textColor="#000000"
+        android:backgroundTint="#00FF66" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewChats"
+        android:id="@+id/rvChats"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/headerLayout"
-        android:padding="8dp" />
-</RelativeLayout>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="16dp" />
+</LinearLayout>
