@@ -1,12 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tv_chat_title"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textColor="#FFFFFF"
-    android:textSize="15sp"
-    android:paddingVertical="10dp"
-    android:paddingHorizontal="8dp"
-    android:background="?attr/selectableItemBackground"
-    android:ellipsize="end"
-    android:maxLines="1"/>
+    android:layout_marginVertical="4dp"
+    android:padding="12dp"
+    android:background="@drawable/bg_chat_item_bubble"
+    android:orientation="horizontal"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/tv_chat_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:ellipsize="end"
+        android:maxLines="1"/>
+
+    <ImageView
+        android:id="@+id/btn_delete_chat"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@android:drawable/ic_menu_delete"
+        android:contentDescription="Удалить"
+        android:tint="#FF5555"
+        android:visibility="visible"/>
+</LinearLayout>
