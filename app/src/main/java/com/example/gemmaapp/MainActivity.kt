@@ -17,18 +17,20 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         drawerLayout = findViewById(R.id.drawer_layout)
-        val btnBurger = findViewById<TextView>(R.id.btn_burger)
-        val btnNewChat = findViewById<TextView>(R.id.btn_new_chat)
+        val btnNewChat = findViewById<TextView>(R.id.btn_drawer_new_chat)
+        val btnAddModel = findViewById<TextView>(R.id.btn_drawer_add_model)
         val btnSend = findViewById<ImageView>(R.id.btn_send)
         val etMessage = findViewById<EditText>(R.id.et_message)
 
-        // Открытие меню СПРАВА
-        btnBurger.setOnClickListener {
-            drawerLayout.openDrawer(GravityCompat.END)
+        // Обработка действий в шторке
+        btnNewChat.setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.END)
+            // Логика нового чата
         }
 
-        btnNewChat.setOnClickListener {
-            // Новый чат
+        btnAddModel.setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.END)
+            // Логика добавления модели
         }
 
         btnSend.setOnClickListener {
