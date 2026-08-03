@@ -24,7 +24,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var tvStatus: TextView
-    private lateinit var btnOpenDrawer: Button
     private lateinit var btnNewChat: Button
     private lateinit var btnSelectModel: Button
     private lateinit var rvMessages: RecyclerView
@@ -47,7 +46,6 @@ class MainActivity : AppCompatActivity() {
 
         drawerLayout = findViewById(R.id.drawerLayout)
         tvStatus = findViewById(R.id.tvStatus)
-        btnOpenDrawer = findViewById(R.id.btnOpenDrawer)
         btnNewChat = findViewById(R.id.btnNewChat)
         btnSelectModel = findViewById(R.id.btnSelectModel)
         rvMessages = findViewById(R.id.rvMessages)
@@ -58,14 +56,13 @@ class MainActivity : AppCompatActivity() {
         rvMessages.layoutManager = LinearLayoutManager(this)
         rvMessages.adapter = messageAdapter
 
-        btnOpenDrawer.setOnClickListener { drawerLayout.openDrawer(GravityCompat.START) }
         btnNewChat.setOnClickListener {
             createNewChat()
-            drawerLayout.closeDrawer(GravityCompat.START)
+            drawerLayout.closeDrawer(GravityCompat.END)
         }
         btnSelectModel.setOnClickListener {
             selectModelLauncher.launch("*/*")
-            drawerLayout.closeDrawer(GravityCompat.START)
+            drawerLayout.closeDrawer(GravityCompat.END)
         }
         btnSend.setOnClickListener {
             val txt = etMessage.text.toString().trim()
@@ -99,25 +96,21 @@ class MainActivity : AppCompatActivity() {
     private fun checkSavedModel() {
         val modelFile = File(filesDir, "selected_model.bin")
         if (modelFile.exists() && modelFile.length() > 0) {
-            tvStatus.text = "Загрузка модели..."
             initLlmEngine(modelFile)
-        } else {
-            tvStatus.text = "Нажмите ☰ -> Выберите модель"
         }
     }
 
     private fun loadModelFromUri(uri: Uri) {
-        tvStatus.text = "Копирование..."
+        tvStatus.text = "ЗАГРУЗКА..."
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val dest = File(filesDir, "selected_model.bin")
                 contentResolver.openInputStream(uri)?.use { input ->
                     FileOutputStream(dest).use { input.copyTo(it) }
                 }
-                withContext(Dispatchers.Main) { tvStatus.text = "Инициализация..." }
                 initLlmEngine(dest)
             } catch (e: Exception) {
-                withContext(Dispatchers.Main) { tvStatus.text = "Ошибка загрузки" }
+                withContext(Dispatchers.Main) { tvStatus.text = "GEMMA AI" }
             }
         }
     }
@@ -133,11 +126,11 @@ class MainActivity : AppCompatActivity() {
                     .build()
                 llmInference?.close()
                 llmInference = LlmInference.createFromOptions(this@MainActivity, options)
-                withContext(Dispatchers.Main) { tvStatus.text = "Gemma (Готова)" }
+                withContext(Dispatchers.Main) { tvStatus.text = "GEMMA AI (ГОТОВА)" }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    tvStatus.text = "Ошибка формата модели"
-                    Toast.makeText(this@MainActivity, "MediaPipe требует конвертированный .bin/.task", Toast.LENGTH_LONG).show()
+                    tvStatus.text = "GEMMA AI"
+                    Toast.makeText(this@MainActivity, "Ошибка формата модели", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -154,15 +147,15 @@ class MainActivity : AppCompatActivity() {
         ChatStorageManager.saveChats(this, allChats)
 
         val botIndex = messages.size
-        val botMsg = ChatMessage(text = "Думаю...", isUser = false)
+        val botMsg = ChatMessage(text = "...", isUser = false)
         messages.add(botMsg)
         messageAdapter.notifyItemInserted(botIndex)
         rvMessages.scrollToPosition(botIndex)
 
         lifecycleScope.launch(Dispatchers.IO) {
             val response = try {
-                llmInference?.generateResponse(userText) ?: "Загрузите модель через меню (☰)"
-            } catch (e: Exception) { "Ошибка: ${e.localizedMessage}" }
+                llmInference?.generateResponse(userText) ?: "..."
+            } catch (e: Exception) { "..." }
 
             withContext(Dispatchers.Main) {
                 val finalMsg = ChatMessage(text = response, isUser = false)

@@ -10,7 +10,7 @@ data class ChatMessage(
 
 data class ChatSession(
     val id: String = UUID.randomUUID().toString(),
-    var title: String = "Новый чат",
+    var title: String = "Чат",
     val messages: MutableList<ChatMessage> = mutableListOf(),
     val createdAt: Long = System.currentTimeMillis()
 )

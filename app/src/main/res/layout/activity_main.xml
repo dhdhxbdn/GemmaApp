@@ -4,44 +4,33 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#121212">
+    android:background="#000000">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- Шапка -->
+        <!-- Верхняя панель (без бургера) -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="#1E1E1E"
+            android:layout_height="48dp"
+            android:background="#000000"
             android:gravity="center_vertical"
-            android:paddingHorizontal="12dp">
-
-            <Button
-                android:id="@+id/btnOpenDrawer"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:text="☰"
-                android:textSize="18sp"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#2C2C2C"
-                android:padding="0dp" />
+            android:paddingHorizontal="16dp">
 
             <TextView
                 android:id="@+id/tvStatus"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="12dp"
-                android:text="Gemma AI"
-                android:textColor="#4CAF50"
-                android:textSize="13sp"
+                android:text="GEMMA AI"
+                android:textColor="#00FF66"
+                android:textSize="14sp"
+                android:textStyle="bold"
                 android:singleLine="true" />
         </LinearLayout>
 
-        <!-- Сообщения -->
+        <!-- Список сообщений -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvMessages"
             android:layout_width="match_parent"
@@ -55,17 +44,17 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="8dp"
-            android:background="#1E1E1E">
+            android:background="#000000">
 
             <EditText
                 android:id="@+id/etMessage"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Спросите о чем-нибудь..."
-                android:textColor="#FFFFFF"
-                android:textColorHint="#757575"
-                android:background="#2C2C2C"
+                android:hint="Сообщение..."
+                android:textColor="#00FF66"
+                android:textColorHint="#004422"
+                android:background="#000000"
                 android:padding="12dp"
                 android:maxLines="4" />
 
@@ -76,17 +65,17 @@
                 android:text="➔"
                 android:textSize="18sp"
                 android:textColor="#000000"
-                android:backgroundTint="#4CAF50"
+                android:backgroundTint="#00FF66"
                 android:layout_marginStart="8dp" />
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Боковая шторка -->
+    <!-- Выдвижная панель СПРАВА (Gravity.END) -->
     <LinearLayout
         android:layout_width="280dp"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="#181818"
+        android:layout_gravity="end"
+        android:background="#000000"
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -95,23 +84,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="+ Новый чат"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#2E7D32" />
+            android:textColor="#000000"
+            android:backgroundTint="#00FF66" />
 
         <Button
             android:id="@+id/btnSelectModel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="📁 Выбрать модель"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#424242" />
+            android:text="Выбрать модель"
+            android:textColor="#00FF66"
+            android:backgroundTint="#000000" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="История чатов"
-            android:textColor="#9E9E9E"
+            android:text="Чаты"
+            android:textColor="#00FF66"
             android:textSize="12sp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp" />
