@@ -20,25 +20,27 @@ class MainActivity : AppCompatActivity() {
         recyclerViewMessages = findViewById(R.id.recyclerViewMessages)
         etMessage = findViewById(R.id.etMessage)
         val btnSend = findViewById<ImageButton>(R.id.btnSend)
+        val btnBack = findViewById<ImageButton>(R.id.btnBack)
+
+        // Кнопка назад возвращает в список чатов
+        btnBack.setOnClickListener { finish() }
 
         messageAdapter = MessageAdapter(messages)
         recyclerViewMessages.adapter = messageAdapter
         recyclerViewMessages.layoutManager = LinearLayoutManager(this).apply {
-            stackFromEnd = true // Показывать последние сообщения
+            stackFromEnd = true
         }
-
-        // Убрали стартовую инфу. Вместо нее чистый чат.
 
         // Обработка кнопки "Отправить"
         btnSend.setOnClickListener {
             val msg = etMessage.text.toString().trim()
             if (msg.isNotEmpty()) {
-                addMessage(msg, true) // Сообщение пользователя
+                addMessage(msg, true)
                 etMessage.text.clear()
                 
-                // Имитация ответа нейросети
+                // Имитация ответа
                 recyclerViewMessages.postDelayed({
-                    addMessage("Я готова к работе! Жду загрузки файла .gguf весов.", false)
+                    addMessage("Интерфейс DeepSeek активирован! Жду веса модели.", false)
                 }, 500)
             }
         }

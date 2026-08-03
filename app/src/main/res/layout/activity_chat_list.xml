@@ -3,22 +3,41 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <TextView
-        android:id="@+id/tvChatListHeader"
+    <!-- Шапка в стиле DeepSeek -->
+    <RelativeLayout
+        android:id="@+id/headerLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Чаты"
-        android:textColor="@color/neon_green"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:padding="16dp"
-        android:background="@color/dark_gray" />
+        android:layout_height="56dp"
+        android:background="@color/dark_gray"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="GEMMA"
+            android:textColor="@color/neon_green"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1" />
+
+        <ImageButton
+            android:id="@+id/btnNewChat"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_send"
+            android:rotation="90"
+            android:tint="@color/neon_green" />
+    </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewChats"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/tvChatListHeader"
+        android:layout_below="@id/headerLayout"
         android:padding="8dp" />
 </RelativeLayout>
