@@ -11,7 +11,7 @@ data class ChatMessage(
 
 data class ChatSession(
     val id: String = UUID.randomUUID().toString(),
-    var title: String = "New Chat",
+    var title: String = "Новый чат",
     val messages: MutableList<ChatMessage> = mutableListOf(),
     val createdAt: Long = System.currentTimeMillis()
 )

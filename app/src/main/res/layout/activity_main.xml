@@ -6,6 +6,65 @@
     android:background="#0A0A0A"
     android:padding="8dp">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#171717"
+        android:padding="8dp"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Статус: Модель не загружена"
+            android:textColor="#00FF66"
+            android:textSize="12sp"
+            android:paddingBottom="4dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnSelectModel"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_weight="1"
+                android:text="Модель"
+                android:textSize="11sp"
+                android:textColor="#000000"
+                android:backgroundTint="#00FF66"
+                android:padding="0dp" />
+
+            <Button
+                android:id="@+id/btnChatList"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:text="Чаты"
+                android:textSize="11sp"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#333333"
+                android:padding="0dp" />
+
+            <Button
+                android:id="@+id/btnNewChat"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:text="+ Чат"
+                android:textSize="11sp"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#333333"
+                android:padding="0dp" />
+        </LinearLayout>
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMessages"
         android:layout_width="match_parent"
@@ -24,7 +83,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Type a message..."
+            android:hint="Введите сообщение..."
             android:textColor="#FFFFFF"
             android:textColorHint="#666666"
             android:background="#1F1F1F"
@@ -34,7 +93,7 @@
             android:id="@+id/btnSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send"
+            android:text="Отправить"
             android:textColor="#000000"
             android:backgroundTint="#00FF66"
             android:layout_marginStart="8dp" />
