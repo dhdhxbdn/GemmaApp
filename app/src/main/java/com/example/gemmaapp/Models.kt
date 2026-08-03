@@ -1,5 +1,4 @@
 package com.example.gemmaapp
-
 import java.util.UUID
 
 data class ChatMessage(
