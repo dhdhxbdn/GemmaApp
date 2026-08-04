@@ -1,4 +1,5 @@
 package com.example.gemmaapp
+
 import java.util.UUID
 
 data class ChatMessage(
@@ -6,11 +7,4 @@ data class ChatMessage(
     val text: String,
     val isUser: Boolean,
     val timestamp: Long = System.currentTimeMillis()
-)
-
-data class ChatSession(
-    val id: String = UUID.randomUUID().toString(),
-    var title: String = "Чат",
-    val messages: MutableList<ChatMessage> = mutableListOf(),
-    val createdAt: Long = System.currentTimeMillis()
 )
