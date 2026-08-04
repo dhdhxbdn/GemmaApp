@@ -12,7 +12,6 @@
         android:orientation="vertical"
         android:padding="8dp">
 
-        <!-- Шапка: gemma -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="44dp"
@@ -26,13 +25,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="gemma"
-                android:textColor="#00FF66"
+                android:textColor="#00A846"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:singleLine="true" />
         </LinearLayout>
 
-        <!-- Список сообщений -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvMessages"
             android:layout_width="match_parent"
@@ -40,7 +38,6 @@
             android:layout_weight="1"
             android:paddingVertical="4dp" />
 
-        <!-- Панель ввода с ИКОНКОЙ ПРИЛОЖЕНИЯ на кнопке отправки -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -54,7 +51,7 @@
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:hint="Сообщение..."
-                android:textColor="#00FF66"
+                android:textColor="#00A846"
                 android:textColorHint="#005522"
                 android:background="@drawable/bg_input_bubble"
                 android:paddingHorizontal="16dp"
@@ -74,7 +71,6 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Выдвижная панель справа -->
     <LinearLayout
         android:layout_width="280dp"
         android:layout_height="match_parent"
@@ -83,16 +79,17 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- ПРЯМОУГОЛЬНАЯ КНОПКА "+ НОВЫЙ ЧАТ" -->
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnNewChat"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="+ Новый чат"
-            android:textColor="#000000"
+            android:textColor="#FFFFFF"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:background="@drawable/bg_send_bubble"
-            android:backgroundTint="#00FF66" />
+            android:background="@drawable/bg_button_filled"
+            android:backgroundTint="@null" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnSelectModel"
@@ -100,7 +97,7 @@
             android:layout_height="48dp"
             android:layout_marginTop="12dp"
             android:text="Выбрать модель"
-            android:textColor="#00FF66"
+            android:textColor="#00A846"
             android:textSize="14sp"
             android:background="@drawable/bg_box_bubble"
             android:backgroundTint="@null" />
@@ -109,7 +106,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Чаты"
-            android:textColor="#00FF66"
+            android:textColor="#00A846"
             android:textSize="12sp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="8dp" />
