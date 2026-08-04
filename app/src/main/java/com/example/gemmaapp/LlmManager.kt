@@ -20,7 +20,6 @@ class LlmManager(private val context: Context) {
                 FileOutputStream(modelFile).use { output -> input.copyTo(output) }
             }
             val options = LlmInference.LlmInferenceOptions.builder()
-                    .setPreferredBackend(LlmInference.Backend.CPU)
                 .setModelPath(modelFile.absolutePath)
                 .setMaxTokens(1024)
                 .build()

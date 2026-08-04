@@ -123,7 +123,6 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val options = LlmInference.LlmInferenceOptions.builder()
-                    .setPreferredBackend(LlmInference.Backend.CPU)
                     .setModelPath(modelFile.absolutePath)
                     .setMaxTokens(1024)
                     .setTopK(40)
