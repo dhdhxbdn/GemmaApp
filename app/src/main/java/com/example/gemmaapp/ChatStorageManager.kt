@@ -5,17 +5,6 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.util.UUID
 
-data class ChatMessage(
-    val text: String,
-    val isUser: Boolean
-)
-
-data class ChatSession(
-    val id: String = UUID.randomUUID().toString(),
-    val title: String,
-    val messages: List<ChatMessage> = emptyList()
-)
-
 class ChatStorageManager(context: Context) {
     private val prefs = context.getSharedPreferences("gemma_chats", Context.MODE_PRIVATE)
 
@@ -39,18 +28,23 @@ class ChatStorageManager(context: Context) {
                 val obj = jsonArray.getJSONObject(i)
                 val id = obj.optString("id", UUID.randomUUID().toString())
                 val title = obj.optString("title", "Чат")
+                val createdAt = obj.optLong("createdAt", System.currentTimeMillis())
+                val timestamp = obj.optLong("timestamp", System.currentTimeMillis())
+                
                 val msgArray = obj.optJSONArray("messages") ?: JSONArray()
                 val messages = mutableListOf<ChatMessage>()
                 for (j in 0 until msgArray.length()) {
                     val mObj = msgArray.getJSONObject(j)
                     messages.add(
                         ChatMessage(
+                            id = mObj.optString("id", UUID.randomUUID().toString()),
                             text = mObj.optString("text", ""),
-                            isUser = mObj.optBoolean("isUser", false)
+                            isUser = mObj.optBoolean("isUser", false),
+                            timestamp = mObj.optLong("timestamp", System.currentTimeMillis())
                         )
                     )
                 }
-                list.add(ChatSession(id, title, messages))
+                list.add(ChatSession(id = id, title = title, messages = messages, createdAt = createdAt, timestamp = timestamp))
             }
             list
         } catch (e: Exception) {
@@ -69,11 +63,16 @@ class ChatStorageManager(context: Context) {
             val obj = JSONObject()
             obj.put("id", session.id)
             obj.put("title", session.title)
+            obj.put("createdAt", session.createdAt)
+            obj.put("timestamp", session.timestamp)
+            
             val msgArray = JSONArray()
             for (msg in session.messages) {
                 val mObj = JSONObject()
+                mObj.put("id", msg.id)
                 mObj.put("text", msg.text)
                 mObj.put("isUser", msg.isUser)
+                mObj.put("timestamp", msg.timestamp)
                 msgArray.put(mObj)
             }
             obj.put("messages", msgArray)
