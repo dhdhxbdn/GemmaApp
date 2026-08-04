@@ -2,178 +2,215 @@ package com.example.gemmaapp
 
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.TextView
+import android.provider.OpenableColumns
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.mediapipe.tasks.genai.llminference.LlmInference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
-class MainActivity : AppCompatActivity() {
-
-    private lateinit var drawerLayout: DrawerLayout
-    private lateinit var tvStatus: TextView
-    private lateinit var btnNewChat: Button
-    private lateinit var btnSelectModel: Button
-    private lateinit var rvMessages: RecyclerView
-    private lateinit var etMessage: EditText
-    private lateinit var btnSend: ImageButton
-
-    private var allChats = mutableListOf<ChatSession>()
-    private var currentChat: ChatSession? = null
-    private val messages = mutableListOf<ChatMessage>()
-    private lateinit var messageAdapter: MessageAdapter
-    private var llmInference: LlmInference? = null
-
-    private val selectModelLauncher = registerForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { uri: Uri? -> uri?.let { loadModelFromUri(it) } }
+class MainActivity : ComponentActivity() {
+    private lateinit var llmManager: LlmManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        llmManager = LlmManager(this)
 
-        drawerLayout = findViewById(R.id.drawerLayout)
-        tvStatus = findViewById(R.id.tvStatus)
-        btnNewChat = findViewById(R.id.btnNewChat)
-        btnSelectModel = findViewById(R.id.btnSelectModel)
-        rvMessages = findViewById(R.id.rvMessages)
-        etMessage = findViewById(R.id.etMessage)
-        btnSend = findViewById(R.id.btnSend)
+        setContent {
+            var messages by remember { mutableStateOf(listOf<Pair<String, Boolean>>()) }
+            var inputText by remember { mutableStateOf("") }
+            var isLoading by remember { mutableStateOf(false) }
+            var statusText by remember { mutableStateOf("ВЫБРАТЬ МОДЕЛЬ GGUF") }
 
-        messageAdapter = MessageAdapter(messages)
-        rvMessages.layoutManager = LinearLayoutManager(this)
-        rvMessages.adapter = messageAdapter
+            val filePicker = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.GetContent()
+            ) { uri: Uri? ->
+                uri?.let {
+                    statusText = "ЗАГРУЗКА..."
+                    isLoading = true
+                    lifecycleScope.launch {
+                        val file = withContext(Dispatchers.IO) { copyUriToCache(it) }
+                        if (file != null) {
+                            llmManager.initModel(file.absolutePath).fold(
+                                onSuccess = {
+                                    statusText = file.name
+                                    isLoading = false
+                                },
+                                onFailure = { err ->
+                                    statusText = "ОШИБКА ЗАГРУЗКИ"
+                                    isLoading = false
+                                    Toast.makeText(this@MainActivity, err.message, Toast.LENGTH_LONG).show()
+                                }
+                            )
+                        } else {
+                            statusText = "ОШИБКА ФАЙЛА"
+                            isLoading = false
+                        }
+                    }
+                }
+            }
 
-        btnNewChat.setOnClickListener {
-            createNewChat()
-            drawerLayout.closeDrawer(GravityCompat.END)
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = Color.Black
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                ) {
+                    Button(
+                        onClick = { filePicker.launch("*/*") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF003300)),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text(
+                            text = if (isLoading) "ЗАГРУЗКА..." else statusText,
+                            color = Color(0xFF00FF66),
+                            fontSize = 16.sp
+                        )
+                    }
+
+                    LazyColumn(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        reverseLayout = false
+                    ) {
+                        items(messages) { msg ->
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp),
+                                contentAlignment = if (msg.second) Alignment.CenterEnd else Alignment.CenterStart
+                            ) {
+                                Surface(
+                                    color = if (msg.second) Color(0xFF004D1A) else Color(0xFF1A1A1A),
+                                    shape = RoundedCornerShape(12.dp)
+                                ) {
+                                    Text(
+                                        text = msg.first,
+                                        color = Color.White,
+                                        modifier = Modifier.padding(12.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        OutlinedTextField(
+                            value = inputText,
+                            onValueChange = { inputText = it },
+                            modifier = Modifier.weight(1f),
+                            placeholder = { Text("Сообщение...", color = Color.Gray) },
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = Color(0xFF00FF66),
+                                unfocusedBorderColor = Color(0xFF003300),
+                                focusedTextColor = Color.White,
+                                unfocusedTextColor = Color.White
+                            ),
+                            shape = RoundedCornerShape(20.dp)
+                        )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        IconButton(
+                            onClick = {
+                                if (inputText.isNotBlank() && llmManager.isModelLoaded()) {
+                                    val prompt = inputText
+                                    messages = messages + Pair(prompt, true)
+                                    inputText = ""
+                                    
+                                    var responseText = ""
+                                    messages = messages + Pair("", false)
+                                    val responseIndex = messages.size - 1
+
+                                    lifecycleScope.launch {
+                                        llmManager.generateResponse(prompt) { token ->
+                                            responseText += token
+                                            val updated = messages.toMutableList()
+                                            updated[responseIndex] = Pair(responseText, false)
+                                            messages = updated
+                                        }
+                                    }
+                                }
+                            },
+                            modifier = Modifier.size(48.dp)
+                        ) {
+                            Text("➔", color = Color(0xFF00FF66), fontSize = 24.sp)
+                        }
+                    }
+                }
+            }
         }
-        btnSelectModel.setOnClickListener {
-            selectModelLauncher.launch("*/*")
-            drawerLayout.closeDrawer(GravityCompat.END)
-        }
-        btnSend.setOnClickListener {
-            val txt = etMessage.text.toString().trim()
-            if (txt.isNotEmpty()) sendMessage(txt)
-        }
-
-        loadChatsAndSelectLatest()
-        checkSavedModel()
     }
 
-    private fun loadChatsAndSelectLatest() {
-        allChats = ChatStorageManager.loadChats(this)
-        if (allChats.isEmpty()) createNewChat() else switchChat(allChats.first())
-    }
-
-    private fun createNewChat() {
-        val newChat = ChatSession(title = "Чат ${allChats.size + 1}")
-        allChats.add(0, newChat)
-        ChatStorageManager.saveChats(this, allChats)
-        switchChat(newChat)
-    }
-
-    private fun switchChat(chat: ChatSession) {
-        currentChat = chat
-        messages.clear()
-        messages.addAll(chat.messages)
-        messageAdapter.notifyDataSetChanged()
-        if (messages.isNotEmpty()) rvMessages.scrollToPosition(messages.size - 1)
-    }
-
-    private fun checkSavedModel() {
-        val modelFile = File(filesDir, "selected_model.bin")
-        if (modelFile.exists() && modelFile.length() > 0) {
-            initLlmEngine(modelFile)
-        }
-    }
-
-    private fun loadModelFromUri(uri: Uri) {
-        tvStatus.text = "ЗАГРУЗКА..."
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                val dest = File(filesDir, "selected_model.bin")
+    private fun copyUriToCache(uri: Uri): File? {
+        return try {
+            val fileName = getFileName(uri) ?: "model.gguf"
+            val cacheFile = File(cacheDir, fileName)
+            if (!cacheFile.exists() || cacheFile.length() == 0L) {
                 contentResolver.openInputStream(uri)?.use { input ->
-                    FileOutputStream(dest).use { input.copyTo(it) }
-                }
-                initLlmEngine(dest)
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) { 
-                    tvStatus.text = "gemma"
-                    Toast.makeText(this@MainActivity, "Ошибка чтения файла", Toast.LENGTH_SHORT).show()
+                    FileOutputStream(cacheFile).use { output ->
+                        input.copyTo(output)
+                    }
                 }
             }
+            cacheFile
+        } catch (e: Exception) {
+            null
         }
     }
 
-    private fun initLlmEngine(modelFile: File) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                val options = LlmInference.LlmInferenceOptions.builder()
-                    .setModelPath(modelFile.absolutePath)
-                    .setMaxTokens(1024)
-                    .setTopK(40)
-                    .setTemperature(0.8f)
-                    .build()
-                llmInference?.close()
-                llmInference = LlmInference.createFromOptions(this@MainActivity, options)
-                withContext(Dispatchers.Main) { tvStatus.text = "gemma (ГОТОВА)" }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    tvStatus.text = "gemma"
-                    val err = e.localizedMessage ?: "Несовместимый формат"
-                    Toast.makeText(this@MainActivity, "Ошибка: $err", Toast.LENGTH_LONG).show()
+    private fun getFileName(uri: Uri): String? {
+        var result: String? = null
+        if (uri.scheme == "content") {
+            contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    val index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    if (index != -1) result = cursor.getString(index)
                 }
             }
         }
-    }
-
-    private fun sendMessage(userText: String) {
-        val chat = currentChat ?: return
-        val userMsg = ChatMessage(text = userText, isUser = true)
-        messages.add(userMsg)
-        chat.messages.add(userMsg)
-        messageAdapter.notifyItemInserted(messages.size - 1)
-        rvMessages.scrollToPosition(messages.size - 1)
-        etMessage.setText("")
-        ChatStorageManager.saveChats(this, allChats)
-
-        val botIndex = messages.size
-        val botMsg = ChatMessage(text = "...", isUser = false)
-        messages.add(botMsg)
-        messageAdapter.notifyItemInserted(botIndex)
-        rvMessages.scrollToPosition(botIndex)
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            val response = try {
-                llmInference?.generateResponse(userText) ?: "Модель не загружена"
-            } catch (e: Exception) { "Ошибка генерации: ${e.message}" }
-
-            withContext(Dispatchers.Main) {
-                val finalMsg = ChatMessage(text = response, isUser = false)
-                messages[botIndex] = finalMsg
-                if (botIndex < chat.messages.size) chat.messages[botIndex] = finalMsg else chat.messages.add(finalMsg)
-                messageAdapter.notifyItemChanged(botIndex)
-                ChatStorageManager.saveChats(this@MainActivity, allChats)
+        if (result == null) {
+            result = uri.path
+            val cut = result?.lastIndexOf('/')
+            if (cut != null && cut != -1) {
+                result = result?.substring(cut + 1)
             }
         }
+        return result
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        llmInference?.close()
+        llmManager.close()
     }
 }
