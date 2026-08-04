@@ -8,23 +8,22 @@ class LlmManager(private val context: Context) {
     private var isLoaded = false
     private var currentModelPath: String? = null
 
-    // gpuLayers = 16 (гибридный режим: 16 слоев на GPU, остальное на CPU)
     suspend fun initModel(modelPath: String, gpuLayers: Int = 16): Result<Unit> = withContext(Dispatchers.IO) {
         runCatching {
             LlamaBridge.unloadModel()
-            // Загружаем модель с разгрузкой слоев на GPU
+            // Пробуем загрузить 16 слоев на GPU
             val success = LlamaBridge.loadModel(modelPath, gpuLayers)
             if (success) {
                 isLoaded = true
                 currentModelPath = modelPath
             } else {
-                // Если GPU выбьет ошибку, делаем фоллбэк на чистый CPU (0 слоев)
-                val cpuFallback = LlamaBridge.loadModel(modelPath, 0)
-                if (cpuFallback) {
+                // Если GPU дал сбой, прогружаем целиком на CPU (0 слоев на GPU)
+                val cpuSuccess = LlamaBridge.loadModel(modelPath, 0)
+                if (cpuSuccess) {
                     isLoaded = true
                     currentModelPath = modelPath
                 } else {
-                    error("Не удалось загрузить GGUF модель ни на GPU, ни на CPU")
+                    error("Не удалось инициализировать модель GGUF")
                 }
             }
         }
