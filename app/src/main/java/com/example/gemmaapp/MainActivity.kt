@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,7 +29,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnSelectModel: Button
     private lateinit var rvMessages: RecyclerView
     private lateinit var etMessage: EditText
-    private lateinit var btnSend: Button
+    private lateinit var btnSend: ImageButton
 
     private var allChats = mutableListOf<ChatSession>()
     private var currentChat: ChatSession? = null
@@ -110,7 +111,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 initLlmEngine(dest)
             } catch (e: Exception) {
-                withContext(Dispatchers.Main) { tvStatus.text = "GEMMA AI" }
+                withContext(Dispatchers.Main) { 
+                    tvStatus.text = "gemma"
+                    Toast.makeText(this@MainActivity, "Ошибка чтения файла", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -126,11 +130,12 @@ class MainActivity : AppCompatActivity() {
                     .build()
                 llmInference?.close()
                 llmInference = LlmInference.createFromOptions(this@MainActivity, options)
-                withContext(Dispatchers.Main) { tvStatus.text = "GEMMA AI (ГОТОВА)" }
+                withContext(Dispatchers.Main) { tvStatus.text = "gemma (ГОТОВА)" }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    tvStatus.text = "GEMMA AI"
-                    Toast.makeText(this@MainActivity, "Ошибка формата модели", Toast.LENGTH_SHORT).show()
+                    tvStatus.text = "gemma"
+                    val err = e.localizedMessage ?: "Несовместимый формат"
+                    Toast.makeText(this@MainActivity, "Ошибка: $err", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -154,8 +159,8 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch(Dispatchers.IO) {
             val response = try {
-                llmInference?.generateResponse(userText) ?: "..."
-            } catch (e: Exception) { "..." }
+                llmInference?.generateResponse(userText) ?: "Модель не загружена"
+            } catch (e: Exception) { "Ошибка генерации: ${e.message}" }
 
             withContext(Dispatchers.Main) {
                 val finalMsg = ChatMessage(text = response, isUser = false)
