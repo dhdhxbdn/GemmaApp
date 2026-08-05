@@ -67,7 +67,7 @@ Java_com_example_gemmaapp_LlamaBridge_generate(
     const char* prompt_str = env->GetStringUTFChars(prompt, nullptr);
 
     jclass lambda_class = env->GetObjectClass(on_token);
-    jmethodid invoke_id = env->GetMethodID(lambda_class, "invoke", "(Ljava/lang/Object;)Ljava/lang/Object;");
+    jmethodID invoke_id = env->GetMethodID(lambda_class, "invoke", "(Ljava/lang/Object;)Ljava/lang/Object;");
 
     jstring token_str = env->NewStringUTF(" [Модель загружена успешно!]");
     if (invoke_id != nullptr) {
